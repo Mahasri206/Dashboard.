@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    .container {
+      padding: 20px;
+    }
+    .filter-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .filter-container select, .filter-container button {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #fff;
+      cursor: pointer;
+    }
+    .chart-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    canvas {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Interactive Dashboard</h1>
+    <div class="filter-container">
+      <label for="dataFilter">Filter Data:</label>
+      <select id="dataFilter">
+        <option value="all">All</option>
+        <option value="regionA">Region A</option>
+        <option value="regionB">Region B</option>
+        <option value="regionC">Region C</option>
+      </select>
+      <button id="reset">Reset Filters</button>
+    </div>
+    <div class="chart-container">
+      <canvas id="dynamicChart"></canvas>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Sample data
+    const chartData = {
+      all: [3000, 4000, 5000, 6000, 7000, 8000],
+      regionA: [1200, 1500, 1800, 2000, 2200, 2400],
+      regionB: [900, 1000, 1200, 1400, 1600, 1800],
+      regionC: [800, 900, 1000, 1100, 1200, 1300],
+    };
+
+    const months = ['January', 'February', 'March', 'April', 'May', 'June'];
+
+    // Create Chart
+    const ctx = document.getElementById('dynamicChart').getContext('2d');
+    let chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: months,
+        datasets: [{
+          label: 'Sales',
+          data: chartData.all,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: { enabled: true },
+        },
+      },
+    });
+
+    // Event Listeners for Filters
+    document.getElementById('dataFilter').addEventListener('change', (e) => {
+      const filter = e.target.value;
+      chart.data.datasets[0].data = chartData[filter];
+      chart.update();
+    });
+
+    document.getElementById('reset').addEventListener('click', () => {
+      document.getElementById('dataFilter').value = 'all';
+      chart.data.datasets[0].data = chartData.all;
+      chart.update();
+    });
+  </script>
+</body>
+</html>
